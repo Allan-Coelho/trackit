@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { ThreeDots } from "react-loader-spinner";
 
 export default function Button({
   size,
@@ -7,6 +8,9 @@ export default function Button({
   content,
   type = "",
   margin = "3px auto",
+  border = "solid 0px",
+  clickFunction,
+  isDisabled = false,
 }) {
   return (
     <Wrapper
@@ -15,8 +19,24 @@ export default function Button({
       fontColor={fontColor}
       type={type}
       margin={margin}
+      border={border}
+      onClick={clickFunction}
+      disabled={isDisabled}
     >
-      {content}
+      {isDisabled ? (
+        <ThreeDots
+          height="13"
+          width="51"
+          radius="9"
+          color="#ffffff"
+          ariaLabel="three-dots-loading"
+          wrapperStyle={{}}
+          wrapperClassName=""
+          visible={true}
+        />
+      ) : (
+        content
+      )}
     </Wrapper>
   );
 }
@@ -29,7 +49,6 @@ const Wrapper = styled.button`
   justify-content: center;
   text-align: center;
   cursor: pointer;
-  border: solid 0px;
   border-radius: 5px;
   font-weight: 400;
   margin: 3px auto;
@@ -64,6 +83,8 @@ const Wrapper = styled.button`
       config += `margin: ${props.margin};`;
     }
 
+    config += `border: ${props.border};`;
+
     if (props.backgroundColor === "blue") {
       config += "background-color: #52b6ff;";
     }
@@ -85,7 +106,7 @@ const Wrapper = styled.button`
     }
 
     if (props.fontColor === "gray") {
-      config += "color: #CFCFCF;";
+      config += "color: #DBDBDB;";
     }
 
     return config;

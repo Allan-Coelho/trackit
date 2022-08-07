@@ -8,6 +8,7 @@ export default function Text({
   pointer = false,
   fontStyle = "",
   decoration = "",
+  clickFunction,
 }) {
   return (
     <Wrapper
@@ -17,6 +18,7 @@ export default function Text({
       decoration={decoration}
       fontStyle={fontStyle}
       pointer={pointer}
+      onClick={clickFunction}
     >
       {children}
     </Wrapper>

@@ -1,7 +1,24 @@
 import styled from "styled-components";
 
-export default function InputBox({ placeHolder, type, required = true }) {
-  return <Wrapper placeholder={placeHolder} type={type} required={required} />;
+export default function InputBox({
+  placeHolder,
+  type,
+  required = true,
+  setState,
+  isDisabled = false,
+}) {
+  return (
+    <Wrapper
+      placeholder={placeHolder}
+      type={type}
+      required={required}
+      setState={setState}
+      onChange={(event) => {
+        setState(event.target.value);
+      }}
+      disabled={isDisabled}
+    />
+  );
 }
 
 const Wrapper = styled.input`
@@ -11,9 +28,15 @@ const Wrapper = styled.input`
   border-radius: 5px;
   background-color: white;
   margin: 3px 0px;
+  font-size: 20px;
 
   &::placeholder {
     font-size: 20px;
     color: #dbdbdb;
+  }
+
+  &:disabled {
+    background-color: #f2f2f2;
+    color: #b3b3b3;
   }
 `;

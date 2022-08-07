@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import add from "./add.svg";
 import Button from "./Button";
 export default function Title({ children }) {
   return (
@@ -9,7 +8,7 @@ export default function Title({ children }) {
         margin="0px"
         size={"small"}
         backgroundColor="blue"
-        content={<AddStyle src={add} />}
+        content={<AddStyle>{"+"}</AddStyle>}
       />
     </Wrapper>
   );
@@ -31,6 +30,14 @@ const TitleStyle = styled.span`
   font-size: 23px;
 `;
 
-const AddStyle = styled.img`
+const AddStyle = styled.span`
   color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  margin-bottom: 4px;
+  height: 16px;
+  font-size: 30px;
+  line-height: 34px;
 `;

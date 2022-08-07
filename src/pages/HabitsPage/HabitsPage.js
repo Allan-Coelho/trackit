@@ -1,4 +1,5 @@
 import Footer from "../components/Footer/Footer";
+import HabitCard from "../components/HabitCard/HabitCard";
 import Header from "../components/Header/Header";
 import MainContainer from "../components/Shared/MainContainer";
 import Title from "../components/Shared/Title";
@@ -13,6 +14,7 @@ export default function HabitsPage() {
       />
       <MainContainer color="gray">
         <Title>{"Meus Hábitos"}</Title>
+        <HabitCard />
       </MainContainer>
       <Footer percentage={90} />
     </>

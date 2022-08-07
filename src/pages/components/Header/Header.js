@@ -27,6 +27,7 @@ const Wrapper = styled.div`
 const ProfilePicture = styled.img`
   background: url(${(props) => props.profilePictureURL}) center center no-repeat;
   background-size: cover;
+  background-color: black;
   border-radius: 50%;
   height: 51px;
   width: 51px;
