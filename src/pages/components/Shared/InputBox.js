@@ -4,18 +4,19 @@ export default function InputBox({
   placeHolder,
   type,
   required = true,
-  setState,
+  handleChange,
   isDisabled = false,
+  name,
+  value,
 }) {
   return (
     <Wrapper
       placeholder={placeHolder}
       type={type}
       required={required}
-      setState={setState}
-      onChange={(event) => {
-        setState(event.target.value);
-      }}
+      name={name}
+      value={value}
+      onChange={handleChange}
       disabled={isDisabled}
     />
   );

@@ -4,32 +4,99 @@ import InputBox from "../components/Shared/InputBox";
 import MainContainer from "../components/Shared/MainContainer";
 import logo from "../components/Shared/logo.svg";
 import Text from "../components/Shared/Text";
+import { useState } from "react";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import UserContext from "../../contexts/UserContext.js";
 
 export default function LoginPage() {
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
+  const [isLoading, setIsLoading] = useState(false);
+
+  function handleChange(event) {
+    setForm({
+      ...form,
+      [event.target.name]: event.target.value,
+    });
+  }
+
+  function login(event) {
+    event.preventDefault();
+
+    const body = {
+      email: form.email,
+      password: form.password,
+    };
+
+    const promise = axios.post(
+      "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login",
+      body
+    );
+
+    setIsLoading(true);
+
+    promise.then((response) => {
+      const data = response.data;
+      console.log(data);
+      localStorage.setItem("userData", JSON.stringify(data));
+      console.log(JSON.parse(localStorage.getItem("userData")));
+      setIsLoading(false);
+    });
+
+    promise.catch((response) => {
+      alert("Ocorreu um erro no login");
+      setIsLoading(false);
+      console.log(response);
+    });
+  }
+
   return (
     <>
       <MainContainer>
         <Logo src={logo} />
-        <form>
-          <InputBox type="email" placeHolder={"email"} />
-          <InputBox type="password" placeHolder={"senha"} />
+        <form onSubmit={login}>
+          <InputBox
+            type="email"
+            placeHolder={"email"}
+            handleChange={handleChange}
+            isDisabled={isLoading}
+            name="email"
+            required={true}
+            value={form.email}
+          />
+          <InputBox
+            type="password"
+            placeHolder={"senha"}
+            handleChange={handleChange}
+            isDisabled={isLoading}
+            required={true}
+            name="password"
+            value={form.password}
+          />
           <Button
             size="large"
             type="submit"
             fontColor="white"
             backgroundColor="blue"
-            content={"Entrar"}
+            content="Entrar"
+            isDisabled={isLoading}
           />
         </form>
-        <Text
-          size="small"
-          color="blue"
-          position="center"
-          decoration="underline"
-          pointer={true}
-        >
-          {"Não tem uma conta? Cadastre-se!"}
-        </Text>
+        <Link to={"/cadastro"}>
+          <Text
+            size="small"
+            color="blue"
+            position="center"
+            decoration="underline"
+            pointer={true}
+          >
+            {"Não tem uma conta? Cadastre-se!"}
+          </Text>
+        </Link>
       </MainContainer>
     </>
   );

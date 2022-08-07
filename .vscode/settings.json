@@ -5,6 +5,7 @@
         "Cancelar",
         "conta",
         "Entrar",
+        "erro",
         "Faça",
         "foto",
         "hábito",
@@ -13,8 +14,11 @@
         "Hoje",
         "Insira",
         "Meus",
+        "novamente",
+        "Ocorreu",
         "Salvar",
         "semana",
-        "senha"
+        "senha",
+        "Tente"
     ]
 }
