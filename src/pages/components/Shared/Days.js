@@ -3,15 +3,11 @@ import styled from "styled-components";
 import Button from "./Button";
 
 export default function Days({ setState, state, isDisabled }) {
-
   function clickHandler(button) {
     let newButtons = [...state];
 
-    if (button.isSelected === true) {
-      newButtons[button.number].isSelected = false;
-    } else {
-      newButtons[button.number].isSelected = true;
-    }
+    newButtons[button.number].isSelected =
+      !newButtons[button.number].isSelected;
 
     setState(newButtons);
   }

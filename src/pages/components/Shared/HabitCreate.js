@@ -6,7 +6,7 @@ import InputBox from "./InputBox";
 import Text from "./Text";
 import axios from "axios";
 
-export default function HabitCreate() {
+export default function HabitCreate({ setIsAdd, setHabit }) {
   const standardDays = [
     { name: "D", number: 0, isSelected: false },
     { name: "S", number: 1, isSelected: false },
@@ -20,9 +20,12 @@ export default function HabitCreate() {
   const [days, setDays] = useState(standardDays);
   const [isLoading, setIsLoading] = useState(false);
 
+  function handleChange(event) {
+    setName(event.target.value);
+  }
+
   function cancel() {
-    setDays(standardDays);
-    setName("");
+    setIsAdd(false);
   }
 
   function save() {
@@ -47,25 +50,35 @@ export default function HabitCreate() {
 
     const config = {
       headers: {
-        Authorization: `Bearer `,
+        Authorization:
+          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTIxNSwiaWF0IjoxNjU5OTEyOTIwfQ.3YZA58piwqk_kJFWqSp8a8RLxeasC98GZp068PZKZBQ",
       },
     };
+
     const promise = axios.post(
       "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits",
       body,
       config
     );
+
     setIsLoading(true);
 
-    promise.then((response) => {});
+    promise.then(() => {
+      setIsLoading(false);
+      setDays(standardDays);
+      setName("");
+      setIsAdd(false);
+      window.location.reload();
+    });
   }
   return (
     <Wrapper>
       <InputBox
         placeHolder={"nome do hábito"}
         type="text"
+        value={name}
         required={true}
-        setState={setName}
+        handleChange={handleChange}
         isDisabled={isLoading}
       />
       <Days setState={setDays} state={days} isDisabled={isLoading} />
@@ -101,6 +114,7 @@ const Wrapper = styled.div`
   padding: 18px;
   border-radius: 5px;
   background-color: #fff;
+  margin-bottom: 10px;
 `;
 
 const ButtonsContainer = styled.div`

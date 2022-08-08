@@ -1,19 +1,34 @@
 import { useContext, useEffect, useState } from "react";
 import UserContext from "../../contexts/UserContext";
-import { getHabits } from "../../services/services";
-import Footer from "../components/Footer/Footer";
-import HabitCard from "../components/HabitCard/HabitCard";
+import { getTodayHabits } from "../../services/services";
 import Header from "../components/Header/Header";
+import Footer from "../components/Footer/Footer";
 import MainContainer from "../components/Shared/MainContainer";
 import Title from "../components/Shared/Title";
-import Text from "../components/Shared/Text";
+import dayjs from "dayjs";
+import updateLocale from "dayjs/plugin/updateLocale";
+import HabitCard from "../components/HabitCard/HabitCard";
 import { Oval } from "react-loader-spinner";
+import Text from "../components/Shared/Text";
 
-export default function HabitsPage() {
-  const [isAdd, setIsAdd] = useState(false);
-  const [habits, setHabits] = useState(null);
+dayjs.extend(updateLocale);
+dayjs.updateLocale("en", {
+  weekdays: [
+    "Domingo",
+    "Segunda",
+    "Terça",
+    "Quarta",
+    "Quinta",
+    "Sexta",
+    "Sábado",
+  ],
+});
+
+export default function TodayPage() {
+  const [todayHabits, setTodayHabits] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const { loginData } = useContext(UserContext);
+  const todayTitle = dayjs().format("dddd[,] DD/MM");
 
   useEffect(() => {
     const config = {
@@ -22,15 +37,14 @@ export default function HabitsPage() {
           "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTIxNSwiaWF0IjoxNjU5OTEyOTIwfQ.3YZA58piwqk_kJFWqSp8a8RLxeasC98GZp068PZKZBQ",
       },
     };
-
-    const promise = getHabits(config);
     setIsLoading(true);
+    const promise = getTodayHabits(config);
 
     promise.then((response) => {
-      setHabits(() => {
+      setIsLoading(false);
+      setTodayHabits(() => {
         return response.data.length === 0 ? null : response.data;
       });
-      setIsLoading(false);
     });
   }, []);
 
@@ -42,10 +56,7 @@ export default function HabitsPage() {
         }
       />
       <MainContainer color="gray">
-        <Title setState={setIsAdd} state={isAdd}>
-          {"Meus Hábitos"}
-        </Title>
-        {isAdd ? <HabitCard type="create" setIsAdd={setIsAdd} /> : ""}
+        <Title showButton={false}>{todayTitle}</Title>
 
         {isLoading ? (
           <Oval
@@ -60,14 +71,15 @@ export default function HabitsPage() {
             strokeWidth={2}
             strokeWidthSecondary={2}
           />
-        ) : habits !== null ? (
-          habits.map((habit) => (
+        ) : todayHabits !== null ? (
+          todayHabits.map((habit) => (
             <HabitCard
-              type="habit"
+              type="status"
               name={habit.name}
               id={habit.id}
-              days={habit.days}
-              setHabits={setHabits}
+              done={habit.done}
+              currentSequence={habit.currentSequence}
+              highestSequence={habit.highestSequence}
             />
           ))
         ) : (

@@ -1,15 +1,25 @@
 import styled from "styled-components";
 import Button from "./Button";
-export default function Title({ children }) {
+export default function Title({
+  children,
+  setState,
+  state,
+  showButton = true,
+}) {
   return (
     <Wrapper>
       <TitleStyle>{children}</TitleStyle>
-      <Button
-        margin="0px"
-        size={"small"}
-        backgroundColor="blue"
-        content={<AddStyle>{"+"}</AddStyle>}
-      />
+      {showButton ? (
+        <Button
+          margin="0px"
+          size={"small"}
+          backgroundColor="blue"
+          clickFunction={() => setState(!state)}
+          content={<AddStyle>{"+"}</AddStyle>}
+        />
+      ) : (
+        ""
+      )}
     </Wrapper>
   );
 }

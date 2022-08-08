@@ -28,7 +28,7 @@ export default function Text({
 const Wrapper = styled.span`
   font-size: 22px;
   margin: 5px 0px;
-
+  word-break: break-all;
   ${(props) => {
     let config = "";
     if (props.size === "small") {
@@ -64,6 +64,12 @@ const Wrapper = styled.span`
     if (props.color === "white") {
       config += `
         color: #fff;
+      `;
+    }
+
+    if (props.color === "green") {
+      config += `
+        color: #8FC549;
       `;
     }
 

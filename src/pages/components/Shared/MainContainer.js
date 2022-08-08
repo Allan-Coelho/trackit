@@ -9,7 +9,8 @@ const Wrapper = styled.div`
   flex-direction: column;
   padding: 70px 18px;
   width: 100vw;
-  height: 100vh;
+  min-height: 100vh;
+  height: 100%;
   background-color: ${(props) => {
     return props.color === "gray" ? "#E5E5E5" : "#fff";
   }};

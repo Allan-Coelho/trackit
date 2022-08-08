@@ -32,10 +32,12 @@ export default function SignUpPage() {
     setIsLoading(true);
 
     promise.then(() => {
+      setIsLoading(false);
       navigate("/");
     });
 
     promise.catch(() => {
+      setIsLoading(false);
       alert("Ocorreu um erro no cadastro. Tente novamente.");
     });
   }

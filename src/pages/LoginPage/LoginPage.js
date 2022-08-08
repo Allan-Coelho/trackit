@@ -4,11 +4,10 @@ import InputBox from "../components/Shared/InputBox";
 import MainContainer from "../components/Shared/MainContainer";
 import logo from "../components/Shared/logo.svg";
 import Text from "../components/Shared/Text";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { useContext } from "react";
-import UserContext from "../../contexts/UserContext.js";
+import UserContext from "../../contexts/UserContext";
 
 export default function LoginPage() {
   const [form, setForm] = useState({
@@ -16,6 +15,7 @@ export default function LoginPage() {
     password: "",
   });
   const [isLoading, setIsLoading] = useState(false);
+  const { setLoginData } = useContext(UserContext);
 
   function handleChange(event) {
     setForm({
@@ -41,9 +41,7 @@ export default function LoginPage() {
 
     promise.then((response) => {
       const data = response.data;
-      console.log(data);
-      localStorage.setItem("userData", JSON.stringify(data));
-      console.log(JSON.parse(localStorage.getItem("userData")));
+      setLoginData(data);
       setIsLoading(false);
     });
 
