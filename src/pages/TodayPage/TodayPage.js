@@ -10,6 +10,8 @@ import updateLocale from "dayjs/plugin/updateLocale";
 import HabitCard from "../components/HabitCard/HabitCard";
 import { Oval } from "react-loader-spinner";
 import Text from "../components/Shared/Text";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 
 dayjs.extend(updateLocale);
 dayjs.updateLocale("en", {
@@ -27,16 +29,22 @@ dayjs.updateLocale("en", {
 export default function TodayPage() {
   const [todayHabits, setTodayHabits] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { loginData } = useContext(UserContext);
+  const { loginData, setPercentage, percentage } = useContext(UserContext);
   const todayTitle = dayjs().format("dddd[,] DD/MM");
+  const [isChanged, setIsChanged] = useState(false);
+  const navigate = useNavigate();
+
+  if (loginData.token === undefined) {
+    navigate("/");
+  }
 
   useEffect(() => {
     const config = {
       headers: {
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTIxNSwiaWF0IjoxNjU5OTEyOTIwfQ.3YZA58piwqk_kJFWqSp8a8RLxeasC98GZp068PZKZBQ",
+        Authorization: `Bearer ${loginData.token}`,
       },
     };
+
     setIsLoading(true);
     const promise = getTodayHabits(config);
 
@@ -45,19 +53,37 @@ export default function TodayPage() {
       setTodayHabits(() => {
         return response.data.length === 0 ? null : response.data;
       });
+      if (response.data.length === 0) {
+        setPercentage(0);
+      } else {
+        setPercentage(
+          Math.round(
+            100 *
+              (response.data.filter((habit) => habit.done === true).length /
+                response.data.length)
+          )
+        );
+      }
     });
-  }, []);
+  }, [isChanged]);
 
   return (
     <>
-      <Header
-        profilePictureURL={
-          "https://www.mlive.com/resizer/P0_a6UgcfkdY6zTH4ua7OE9AWpY=/1280x0/smart/advancelocal-adapter-image-uploads.s3.amazonaws.com/image.mlive.com/home/mlive-media/width2048/img/us-world-news/photo/odd-fat-cat-adoption-be22e5eb83799ccf.jpg"
-        }
-      />
+      <Header profilePictureURL={loginData.image} />
       <MainContainer color="gray">
-        <Title showButton={false}>{todayTitle}</Title>
-
+        <TitlesContainer>
+          <Title margin={"none"} showButton={false}>{todayTitle}</Title>
+          {percentage === 0 ? (
+            <Text color={"gray"} size="medium">
+              {"Nenhum hábito concluído ainda"}
+            </Text>
+          ) : (
+            <Text
+              color={"green"}
+              size="medium"
+            >{`${percentage}% dos hábitos concluídos`}</Text>
+          )}
+        </TitlesContainer>
         {isLoading ? (
           <Oval
             height={80}
@@ -72,7 +98,7 @@ export default function TodayPage() {
             strokeWidthSecondary={2}
           />
         ) : todayHabits !== null ? (
-          todayHabits.map((habit) => (
+          todayHabits.map((habit, index) => (
             <HabitCard
               type="status"
               name={habit.name}
@@ -80,6 +106,10 @@ export default function TodayPage() {
               done={habit.done}
               currentSequence={habit.currentSequence}
               highestSequence={habit.highestSequence}
+              setIsChanged={setIsChanged}
+              setIsLoading={setIsLoading}
+              isChanged={isChanged}
+              key={index}
             />
           ))
         ) : (
@@ -94,3 +124,10 @@ export default function TodayPage() {
     </>
   );
 }
+
+const TitlesContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 28px 0px 20px 0px;
+`;

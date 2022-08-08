@@ -5,9 +5,10 @@ export default function Title({
   setState,
   state,
   showButton = true,
+  margin,
 }) {
   return (
-    <Wrapper>
+    <Wrapper margin={margin}>
       <TitleStyle>{children}</TitleStyle>
       {showButton ? (
         <Button
@@ -28,7 +29,13 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 28px 0px 20px 0px;
+
+  ${(props) => {
+    if (props.margin === "none") {
+      return "margin: 0px;";
+    }
+    return "margin: 28px 0px 20px 0px;";
+  }}
 `;
 
 const TitleStyle = styled.span`

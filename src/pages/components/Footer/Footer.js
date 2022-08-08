@@ -1,15 +1,25 @@
 import styled from "styled-components";
 import Text from "../Shared/Text";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
+import { Link } from "react-router-dom";
+import { useContext } from "react";
+import UserContext from "../../../contexts/UserContext";
 
-export default function Footer({ percentage }) {
+export default function Footer() {
+  const { percentage } = useContext(UserContext);
+
   return (
     <>
       <Wrapper>
-        <Text color="blue" size="medium" pointer={true}>
-          {"Hábitos"}
-        </Text>
+        <Link to={"/habitos"}>
+          <Text color="blue" size="medium" pointer={true}>
+            {"Hábitos"}
+          </Text>
+        </Link>
         <ProgressContainer>
+          <Link to={"/hoje"}>
+            <TodayButton>Hoje</TodayButton>
+          </Link>
           <CircularProgressbar
             value={percentage}
             strokeWidth={8}
@@ -24,26 +34,25 @@ export default function Footer({ percentage }) {
             })}
           />
         </ProgressContainer>
-        <Text color="blue" size="medium" pointer={true}>
-          {"Histórico"}
-        </Text>
+        <Link to={"/historico"}>
+          <Text color="blue" size="medium" pointer={true}>
+            {"Histórico"}
+          </Text>
+        </Link>
       </Wrapper>
     </>
   );
 }
 
 const ProgressContainer = styled.div`
-  position: fixed;
-  bottom: 10px;
   border-radius: 50%;
-  margin-left: -49px;
-  left: 50%;
   height: 91px;
   width: 91px;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
+  margin-bottom: 40px;
 `;
 
 const Wrapper = styled.div`
@@ -58,4 +67,13 @@ const Wrapper = styled.div`
   background: #fff;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
   height: 70px;
+`;
+
+const TodayButton = styled.span`
+  position: fixed;
+  bottom: 47px;
+  left: 43.5vw;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
 `;

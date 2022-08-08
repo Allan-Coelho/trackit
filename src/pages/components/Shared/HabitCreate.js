@@ -1,30 +1,31 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import Button from "./Button";
 import Days from "./Days";
 import InputBox from "./InputBox";
 import Text from "./Text";
-import axios from "axios";
+import UserContext from "../../../contexts/UserContext";
+import { postHabit } from "../../../services/services";
+import { standardDays } from "../../../constants/constants";
 
-export default function HabitCreate({ setIsAdd, setHabit }) {
-  const standardDays = [
-    { name: "D", number: 0, isSelected: false },
-    { name: "S", number: 1, isSelected: false },
-    { name: "T", number: 2, isSelected: false },
-    { name: "Q", number: 3, isSelected: false },
-    { name: "Q", number: 4, isSelected: false },
-    { name: "S", number: 5, isSelected: false },
-    { name: "S", number: 6, isSelected: false },
-  ];
-  const [name, setName] = useState("");
-  const [days, setDays] = useState(standardDays);
+export default function HabitCreate({ setIsAdd, isChanged, setIsChanged }) {
+  const { loginData, createCardData, setCreateCardData } =
+    useContext(UserContext);
+  const [name, setName] = useState(createCardData.name);
+  const [days, setDays] = useState(createCardData.days);
   const [isLoading, setIsLoading] = useState(false);
+
+  console.log(createCardData);
 
   function handleChange(event) {
     setName(event.target.value);
   }
 
   function cancel() {
+    setCreateCardData({
+      name: name,
+      days: days,
+    });
     setIsAdd(false);
   }
 
@@ -50,25 +51,22 @@ export default function HabitCreate({ setIsAdd, setHabit }) {
 
     const config = {
       headers: {
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTIxNSwiaWF0IjoxNjU5OTEyOTIwfQ.3YZA58piwqk_kJFWqSp8a8RLxeasC98GZp068PZKZBQ",
+        Authorization: `Bearer ${loginData.token}`,
       },
     };
 
-    const promise = axios.post(
-      "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits",
-      body,
-      config
-    );
+    const promise = postHabit(body, config);
 
     setIsLoading(true);
 
     promise.then(() => {
       setIsLoading(false);
-      setDays(standardDays);
-      setName("");
       setIsAdd(false);
-      window.location.reload();
+      setCreateCardData({
+        name: "",
+        days: standardDays,
+      });
+      setIsChanged(!isChanged);
     });
   }
   return (

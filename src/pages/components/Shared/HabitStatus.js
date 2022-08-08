@@ -1,16 +1,45 @@
 import styled from "styled-components";
 import checkmark from "../../components/Shared/checkmark.svg";
 import Text from "./Text";
+import { postCheckHabit, postUncheckHabit } from "../../../services/services";
+import { useContext } from "react";
+import UserContext from "../../../contexts/UserContext";
 
 export default function HabitStatus({
-  done = false,
+  done,
   name,
   id,
   currentSequence,
   highestSequence,
+  setIsChanged,
+  isChanged,
+  setIsLoading,
 }) {
-  function handleClick() {
-    
+  const { loginData } = useContext(UserContext);
+
+  function handleClick(habitID) {
+    const config = {
+      headers: {
+        Authorization: `Bearer ${loginData.token}`,
+      },
+    };
+    let promise;
+
+    if (done) {
+      promise = postUncheckHabit(config, habitID);
+    } else {
+      promise = postCheckHabit(config, habitID);
+    }
+    setIsLoading(true);
+    promise.then(() => {
+      setIsChanged(!isChanged);
+    });
+
+    promise.catch(() => {
+      alert(
+        "Não foi possível atualizar o status do hábito. Por favor, tente novamente."
+      );
+    });
   }
 
   return (
@@ -19,16 +48,34 @@ export default function HabitStatus({
         <Text size={"large"} color="gray">
           {name}
         </Text>
-        <Text
-          size={"small"}
-          color="gray"
-        >{`Sequência Atual: ${currentSequence} dias`}</Text>
-        <Text
-          size={"small"}
-          color="gray"
-        >{`Seu recorde: ${highestSequence} dias`}</Text>
+        <Text size={"small"} color="gray">
+          Sequência Atual:
+          <Text
+            color={
+              currentSequence === highestSequence &&
+              currentSequence !== 0 &&
+              highestSequence !== 0
+                ? "green"
+                : "gray"
+            }
+            size="small"
+          >{` ${currentSequence} dias`}</Text>
+        </Text>
+        <Text size={"small"} color="gray">
+          Seu recorde:
+          <Text
+            color={
+              currentSequence === highestSequence &&
+              currentSequence !== 0 &&
+              highestSequence !== 0
+                ? "green"
+                : "gray"
+            }
+            size="small"
+          >{` ${highestSequence} dias`}</Text>
+        </Text>
       </InformationContainer>
-      <CheckButton onClick={handleClick} done={done}>
+      <CheckButton onClick={() => handleClick(id)} done={done}>
         <CheckMark src={checkmark} />
       </CheckButton>
     </Wrapper>

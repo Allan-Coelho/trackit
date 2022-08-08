@@ -6,7 +6,7 @@ import { deleteHabit } from "../../../services/services";
 import { useContext } from "react";
 import UserContext from "../../../contexts/UserContext";
 
-export default function Habit({ name, days, id }) {
+export default function Habit({ name, days, id, setIsChanged, isChanged }) {
   const standardDays = [
     { name: "D", number: 0, isSelected: false },
     { name: "S", number: 1, isSelected: false },
@@ -21,13 +21,12 @@ export default function Habit({ name, days, id }) {
   function deleteHandler() {
     const config = {
       headers: {
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTIxNSwiaWF0IjoxNjU5OTEyOTIwfQ.3YZA58piwqk_kJFWqSp8a8RLxeasC98GZp068PZKZBQ",
+        Authorization: `Bearer ${loginData.token}`,
       },
     };
 
     const confirmation = window.confirm(
-      "Você tem certeza que quer deletar esse hábito?"
+      "Você tem certeza que deseja deletar este hábito?"
     );
 
     if (confirmation === false) {
@@ -36,7 +35,7 @@ export default function Habit({ name, days, id }) {
 
     const promise = deleteHabit(id, config);
 
-    promise.then(() => window.location.reload());
+    promise.then(() => setIsChanged(!isChanged));
   }
 
   const daysData = standardDays.map((day) => {
@@ -78,7 +77,7 @@ const ContentContainer = styled.div`
   align-items: flex-start;
   justify-content: space-between;
   min-height: 63px;
-  max-width: 270px;
+  max-width: 250px;
 `;
 
 const DeleteButton = styled.img`

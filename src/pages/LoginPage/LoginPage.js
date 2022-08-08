@@ -8,6 +8,7 @@ import { useContext, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import UserContext from "../../contexts/UserContext";
+import { postLogin } from "../../services/services";
 
 export default function LoginPage() {
   const [form, setForm] = useState({
@@ -16,6 +17,7 @@ export default function LoginPage() {
   });
   const [isLoading, setIsLoading] = useState(false);
   const { setLoginData } = useContext(UserContext);
+  const navigate = useNavigate();
 
   function handleChange(event) {
     setForm({
@@ -32,10 +34,7 @@ export default function LoginPage() {
       password: form.password,
     };
 
-    const promise = axios.post(
-      "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login",
-      body
-    );
+    const promise = postLogin(body);
 
     setIsLoading(true);
 
@@ -43,6 +42,7 @@ export default function LoginPage() {
       const data = response.data;
       setLoginData(data);
       setIsLoading(false);
+      navigate("/hoje");
     });
 
     promise.catch((response) => {

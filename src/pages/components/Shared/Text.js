@@ -28,7 +28,7 @@ export default function Text({
 const Wrapper = styled.span`
   font-size: 22px;
   margin: 5px 0px;
-  word-break: break-all;
+  word-break: normal;
   ${(props) => {
     let config = "";
     if (props.size === "small") {

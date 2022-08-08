@@ -8,18 +8,24 @@ import MainContainer from "../components/Shared/MainContainer";
 import Title from "../components/Shared/Title";
 import Text from "../components/Shared/Text";
 import { Oval } from "react-loader-spinner";
+import { useNavigate } from "react-router-dom";
 
 export default function HabitsPage() {
   const [isAdd, setIsAdd] = useState(false);
   const [habits, setHabits] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isChanged, setIsChanged] = useState(false);
   const { loginData } = useContext(UserContext);
+  const navigate = useNavigate();
+
+  if (loginData.token === undefined) {
+    navigate("/");
+  }
 
   useEffect(() => {
     const config = {
       headers: {
-        Authorization:
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NTIxNSwiaWF0IjoxNjU5OTEyOTIwfQ.3YZA58piwqk_kJFWqSp8a8RLxeasC98GZp068PZKZBQ",
+        Authorization: `Bearer ${loginData.token}`,
       },
     };
 
@@ -32,20 +38,25 @@ export default function HabitsPage() {
       });
       setIsLoading(false);
     });
-  }, []);
+  }, [isChanged]);
 
   return (
     <>
-      <Header
-        profilePictureURL={
-          "https://www.mlive.com/resizer/P0_a6UgcfkdY6zTH4ua7OE9AWpY=/1280x0/smart/advancelocal-adapter-image-uploads.s3.amazonaws.com/image.mlive.com/home/mlive-media/width2048/img/us-world-news/photo/odd-fat-cat-adoption-be22e5eb83799ccf.jpg"
-        }
-      />
+      <Header profilePictureURL={loginData.image} />
       <MainContainer color="gray">
         <Title setState={setIsAdd} state={isAdd}>
           {"Meus Hábitos"}
         </Title>
-        {isAdd ? <HabitCard type="create" setIsAdd={setIsAdd} /> : ""}
+        {isAdd ? (
+          <HabitCard
+            type="create"
+            setIsAdd={setIsAdd}
+            setIsChanged={setIsChanged}
+            isChanged={isChanged}
+          />
+        ) : (
+          ""
+        )}
 
         {isLoading ? (
           <Oval
@@ -61,13 +72,16 @@ export default function HabitsPage() {
             strokeWidthSecondary={2}
           />
         ) : habits !== null ? (
-          habits.map((habit) => (
+          habits.map((habit, index) => (
             <HabitCard
               type="habit"
               name={habit.name}
               id={habit.id}
               days={habit.days}
               setHabits={setHabits}
+              setIsChanged={setIsChanged}
+              isChanged={isChanged}
+              key={index}
             />
           ))
         ) : (

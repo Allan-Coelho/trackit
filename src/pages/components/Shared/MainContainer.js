@@ -11,6 +11,7 @@ const Wrapper = styled.div`
   width: 100vw;
   min-height: 100vh;
   height: 100%;
+  overflow-y: scroll;
   background-color: ${(props) => {
     return props.color === "gray" ? "#E5E5E5" : "#fff";
   }};

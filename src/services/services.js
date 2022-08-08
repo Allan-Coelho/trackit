@@ -7,6 +7,19 @@ function postSignUp(body) {
   return promise;
 }
 
+function postLogin(body) {
+  const promise = axios.post(
+    "https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login",
+    body
+  );
+  return promise;
+}
+
+function postHabit(body, config) {
+  const promise = axios.post(`${ENDPOINT + "/habits"}`, body, config);
+  return promise;
+}
+
 function getHabits(config) {
   const promise = axios.get(`${ENDPOINT + "/habits"}`, config);
   return promise;
@@ -25,12 +38,31 @@ function getTodayHabits(config) {
   return promise;
 }
 
-function postMarkHabit(config, habitID) {
+function postCheckHabit(config, habitID) {
   const promise = axios.post(
     `${ENDPOINT + "/habits/" + habitID + "/check"}`,
+    "",
     config
   );
   return promise;
 }
 
-export { postSignUp, getHabits, deleteHabit, getTodayHabits };
+function postUncheckHabit(config, habitID) {
+  const promise = axios.post(
+    `${ENDPOINT + "/habits/" + habitID + "/uncheck"}`,
+    "",
+    config
+  );
+  return promise;
+}
+
+export {
+  postSignUp,
+  getHabits,
+  deleteHabit,
+  getTodayHabits,
+  postCheckHabit,
+  postUncheckHabit,
+  postLogin,
+  postHabit,
+};
